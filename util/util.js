@@ -6,7 +6,9 @@ export async function filterImageFromURL(inputURL) {
   return new Promise(async (resolve, reject) => {
     try {
       // Fetch the image and validate the response
-      const response = await axios.get(inputURL, { responseType: 'arraybuffer' });
+      const response = await axios.get(inputURL, {
+        responseType: 'arraybuffer',
+      });
       const contentType = response.headers['content-type'];
       if (!contentType || !contentType.startsWith('image')) {
         return reject(new Error('The URL does not point to a valid image'));
@@ -21,11 +23,16 @@ export async function filterImageFromURL(inputURL) {
         photo = await Jimp.read(buffer);
       } catch (error) {
         console.error('Error Reading image:', error);
-        return reject(new Error('Failed to process the image. Ensure the image format is supported.'));
+        return reject(
+          new Error(
+            'Failed to process the image. Ensure the image format is supported.'
+          )
+        );
       }
 
       // Process the image
-      const outpath = '/tmp/filtered.' + Math.floor(Math.random() * 2000) + '.jpg';
+      const outpath =
+        '/tmp/filtered.' + Math.floor(Math.random() * 2000) + '.jpg';
       console.log('outpath', outpath);
 
       // Resize the image
@@ -35,7 +42,9 @@ export async function filterImageFromURL(inputURL) {
       await photo.greyscale();
 
       // Get the buffer to change the quality
-      const bufferWithQuality = await photo.getBuffer('image/jpeg', { quality: 60 });
+      const bufferWithQuality = await photo.getBuffer('image/jpeg', {
+        quality: 60,
+      });
 
       // Write the processed image to the output path
       fs.writeFileSync(outpath, bufferWithQuality);
